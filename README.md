@@ -6,7 +6,9 @@ This plugin lets you open ngrok tunnels on your computer with webhooks.
 
 Install the plugin globally by running
 
-    npm i -g whfp-ngrok
+    npm i -g whfp-ngrok --unsafe-perm
+
+You can try installing without `--unsafe-perm`, but it is usually required for global installations, since the ngrok module downloads a binary.
 
 ## Configuration
 
