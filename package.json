@@ -1,0 +1,28 @@
+{
+  "name": "whfp-ngrok",
+  "version": "1.0.0",
+  "description": "A plugin for webhookify to allow the remote creation of ngrok tunnels",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jangxx/whfp-ngrok.git"
+  },
+  "keywords": [
+    "webhookify-plugin",
+    "ngrok",
+    "remote"
+  ],
+  "author": "jangxx <jangxx@protonmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jangxx/whfp-ngrok/issues"
+  },
+  "homepage": "https://github.com/jangxx/whfp-ngrok#readme",
+  "dependencies": {
+    "ngrok": "^3.1.1",
+    "webhookify-plugin": "^1.0.0"
+  }
+}
