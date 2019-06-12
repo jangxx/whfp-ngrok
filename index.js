@@ -1,9 +1,13 @@
 const { Plugin } = require('webhookify-plugin');
 const ngrok = require('ngrok');
+const mergeOptions = require('merge-options');
 
 /**
  * config:
  * {
+ *    global: {
+ *      <config options which apply to all tunnels>
+ *    },
  *    tunnels: {
  *      tunnel_name: {
  *        <config options for call to ngrok.connect()>
@@ -17,6 +21,7 @@ class NgrokPlugin extends Plugin {
         super("ngrok", config);
         
         this._tunnels = {};
+        this._globalConfig = this.config.global || {};
 	}
 
     // payload: { action: <open|close>, tunnel: <tunnelname> }
@@ -31,7 +36,7 @@ class NgrokPlugin extends Plugin {
                     return;
                 }
         
-                let tunnelConfig = this.config.tunnels[tunnel];
+                let tunnelConfig = mergeOptions(this._globalConfig, this.config.tunnels[tunnel]);
 
                 if (this._tunnels[tunnel] != null) {
                     return; // tunnel is already open
@@ -39,7 +44,7 @@ class NgrokPlugin extends Plugin {
                     this._tunnels[tunnel] = ""; // so that we can issue another connect request
                     return ngrok.connect(tunnelConfig).then(url => {
                         this._tunnels[tunnel] = url;
-                    }).catch(err => console.log("[ngrok]", "Error:", err.message));
+                    }).catch(err => console.log("[ngrok]", "Error:", err));
                 }
                 break;
             }
@@ -51,7 +56,7 @@ class NgrokPlugin extends Plugin {
                 } else if (tunnel in this._tunnels) {
                     return ngrok.disconnect(this._tunnels[tunnel]).then(() => {
                         delete this._tunnels[tunnel];
-                    }).catch(err => console.log("[ngrok]", "Error:", err.message));
+                    }).catch(err => console.log("[ngrok]", "Error:", err));
                 }
                 break;
             }

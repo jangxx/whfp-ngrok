@@ -14,10 +14,14 @@ You can try installing without `--unsafe-perm`, but it is usually required for g
 
 The plugin needs a pre-defined list of tunnel configurations, which are passed to the ngrok connect function as-is.
 Valid configuration keys are documented [here](https://www.npmjs.com/package/ngrok).
+Global configuration keys, which are valid for all connections (but can be overridden), can also be specified.
 
 Example:
 ```json
 {
+    "global": {
+        ...
+    },
     "tunnels": {
         "tunnel1": {
             ...
