@@ -1,3 +1,4 @@
+const packageJson = require("./package.json");
 const { Plugin } = require('webhookify-plugin');
 const ngrok = require('ngrok');
 const mergeOptions = require('merge-options');
@@ -16,10 +17,14 @@ const mergeOptions = require('merge-options');
  * }
  */
 
+const log = console.log.bind(null, "[ngrok]");
+
 class NgrokPlugin extends Plugin {
 	constructor(config) {
         super("ngrok", config);
         
+        log("This is ngrok version " + packageJson.version);
+
         this._tunnels = {};
         this._globalConfig = this.config.global || {};
 	}
@@ -44,7 +49,7 @@ class NgrokPlugin extends Plugin {
                     this._tunnels[tunnel] = ""; // so that we can issue another connect request
                     return ngrok.connect(tunnelConfig).then(url => {
                         this._tunnels[tunnel] = url;
-                    }).catch(err => console.log("[ngrok]", "Error:", err));
+                    }).catch(err => log("Error:", err));
                 }
                 break;
             }
@@ -52,11 +57,16 @@ class NgrokPlugin extends Plugin {
                 if (tunnel == "all") {
                     return ngrok.disconnect().then(() => {
                         this._tunnels = {};
-                    }).catch(err => console.log("[ngrok]", "Error:", err.message));
+                        return ngrok.kill();
+                    }).catch(err => log("Error:", err.message));
                 } else if (tunnel in this._tunnels) {
                     return ngrok.disconnect(this._tunnels[tunnel]).then(() => {
                         delete this._tunnels[tunnel];
-                    }).catch(err => console.log("[ngrok]", "Error:", err));
+
+                        if (Object.keys(this._tunnels).length == 0) { // kill ngrok if we just closed the last open tunnel
+                            return ngrok.kill();
+                        }
+                    }).catch(err => log("Error:", err));
                 }
                 break;
             }

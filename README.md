@@ -17,7 +17,7 @@ Valid configuration keys are documented [here](https://www.npmjs.com/package/ngr
 Global configuration keys, which are valid for all connections (but can be overridden), can also be specified.
 
 Example:
-```json
+```javascript
 {
     "global": {
         ...
